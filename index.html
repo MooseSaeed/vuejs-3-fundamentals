@@ -40,7 +40,15 @@
       </div>
       <p v-if="items.length === 0">No Items!</p>
       <ul>
-        <li v-for="item in items" key="item.id">{{item.label}}</li>
+        <li
+          v-for="item in items"
+          @click="togglePurchased(item)"
+          :key="item.id"
+          class="static-class"
+          :class="{strikeout: item.purchased, priority: item.highPriority}"
+        >
+          {{item.label}}
+        </li>
       </ul>
     </div>
 
@@ -55,20 +63,44 @@
             newItemHighPriority: false,
             iceCreamFlavors: [],
             items: [
-              { id: 1, label: "10 Party Hats" },
-              { id: 2, label: "2 Board Games" },
-              { id: 3, label: "20 Cups" },
+              {
+                id: 1,
+                label: "10 Party Hats",
+                purchased: true,
+                highPriority: false,
+              },
+              {
+                id: 2,
+                label: "2 Board Games",
+                purchased: true,
+                highPriority: false,
+              },
+              {
+                id: 3,
+                label: "20 Cups",
+                purchased: false,
+                highPriority: true,
+              },
             ],
           };
         },
         methods: {
           saveItem() {
-            this.items.push({ id: this.items.length + 1, label: this.newItem });
+            this.items.push({
+              id: this.items.length + 1,
+              label: this.newItem,
+              highPriority: this.newItemHighPriority,
+            });
             this.newItem = "";
+            this.newItemHighPriority = false;
           },
           doEdit(editing) {
             this.editing = editing;
             this.newItem = "";
+            this.newItemHighPriority = false;
+          },
+          togglePurchased(item) {
+            item.purchased = !item.purchased;
           },
         },
       }).mount("#shopping-list");
